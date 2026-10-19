@@ -76,14 +76,6 @@ fixed m, q and K, and distinct supercritical spikes. Calibration is approximate.
 K=0 uses a documented isotropic extension; rho is inapplicable in that case.
 The bootstrap representation requires p ≥ 2K.
 
-## Reproducing the research code
-
-The default `adjustment = "paper"` follows Algorithm 1 of the published article.
-Use `adjustment = "legacy"` to reproduce the supplied scripts' N/n eigenvalue
-inflation and small detection-boundary offset. The regression tests include
-saved output from the original simulation implementation. See
-[METHODS.md](METHODS.md) for the formula map and deliberate corrections.
-
 ## Development
 
 ```sh
