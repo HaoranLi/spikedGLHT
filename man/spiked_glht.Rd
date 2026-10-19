@@ -8,7 +8,7 @@ regularized LR, LH, and BNP statistics of Li et al. (2024).}
 spiked_glht(Y, X, C, D = NULL, rho = 0.5, K = NULL,
   calibration = c("normal", "bootstrap"), alpha = 0.05,
   B = 1999L, method = c("KN", "PLY"), conf_level = 0.95,
-  delta = 0.05, K_max = NULL, adjustment = c("paper", "legacy"))
+  delta = 0.05, K_max = NULL)
 \method{print}{spiked_glht}(x, ...)
 }
 \arguments{
@@ -18,7 +18,7 @@ Include an intercept explicitly if required.}
 \item{C}{Finite numeric contrast matrix, m rows by q columns, of full column rank.}
 \item{D}{Finite numeric p by q null matrix. NULL denotes zero.}
 \item{rho}{Maximum fraction of signal in the nonspiked subspace, in (0,1].
-Corresponds to the paper's varrho and the scripts' c_0.}
+Corresponds to the paper's varrho.}
 \item{K}{Number of spikes. NULL selects it from residual eigenvalues.
 Must be an integer between zero and min(p-1,N-m-1).}
 \item{calibration}{Normal asymptotic approximation or parametric bootstrap.}
@@ -30,8 +30,6 @@ KN requires the optional RMTstat package.}
 \item{delta}{Positive PLY penalty exponent.}
 \item{K_max}{Maximum candidate spike count. Defaults to min(p-1,N-m-1,
 max(1,floor(0.1*p))). Used for automatic spike selection.}
-\item{adjustment}{Paper Algorithm 1, or legacy scripts' N/n eigenvalue inflation
-and detection-boundary offset of 0.0001.}
 \item{x}{A spiked_glht result.}
 \item{...}{Arguments passed to print.data.frame.}
 }
@@ -50,9 +48,9 @@ Zero eigenvector overlaps at the detection boundary are combined exactly
 in the quadratic program. When K=0, the method uses the isotropic extension
 with weight 1 and prior 1; the rho restriction is then inapplicable.
 
-KN follows the supplied scripts' sequential threshold and upper search bound,
-but allows zero spikes rather than forcing a minimum of one. PLY forwards both
-delta and K_max. See the package's METHODS.md for differences from the scripts.
+Spike and noise estimates follow Algorithm 1 of the published article.
+KN uses a sequential Tracy--Widom threshold with a bounded search and allows
+zero spikes. PLY uses delta and K_max in the penalized criterion.
 
 All three tests use the upper tail. Normal p-values use the standardized
 statistics. Bootstrap p-values use (1 + number of replicates at least as
@@ -65,7 +63,7 @@ Monte Carlo boundary. No adjustment for reporting three tests is applied.
 p.value (chosen calibration), reject, raw.statistic, critical.value (raw scale),
 and normal.p.value; weights and least.favorable.prior ordered as component0,
 then the spikes; K, spikes, sigma_sq, theta1, theta2, alpha, calibration,
-adjustment, rho, dimensions and call. bootstrap.statistics contains a B by 3
+rho, dimensions and call. bootstrap.statistics contains a B by 3
 matrix of raw bootstrap statistics, or NULL for normal calibration.}
 \references{Li, H., Aue, A., Paul, D., and Peng, J. (2024).
 Testing General Linear Hypotheses Under a High-Dimensional Multivariate

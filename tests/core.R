@@ -1,14 +1,15 @@
 library(spikedGLHT)
 near <- function(a, b, tol = 1e-8) stopifnot(isTRUE(all.equal(unname(a), unname(b), tolerance=tol)))
 fails <- function(expr) stopifnot(inherits(tryCatch(force(expr), error=identity), 'error'))
-f <- readRDS('legacy-fixture.rds')
-a <- spiked_glht(f$Y,f$X,f$C,K=2,adjustment='legacy')
-near(a$statistic, f$statistic); near(a$weights,f$weights)
-near(a$least.favorable.prior,f$prior); near(a$spikes,f$spikes)
-near(a$sigma_sq,f$sigma_sq)
+# Deterministic synthetic data; no dependency on research-script output.
+set.seed(20261018)
+p <- 40; N <- 80
+X <- rbind(1, rep(c(-1,1),each=N/2), rnorm(N))
+C <- diag(3)[,2:3,drop=FALSE]
+Y <- matrix(rnorm(p*N),p,N)
+Y[1:2,] <- Y[1:2,] * c(6,4)
 
 # Independent direct implementation of paper Algorithm 1 and Corollary 3.1.
-Y <- f$Y; X <- f$X; C <- f$C
 p <- nrow(Y); N <- ncol(Y); m <- nrow(X); n <- N-m; q <- ncol(C)
 S <- Y %*% (diag(N)-t(X)%*%solve(X%*%t(X),X)) %*% t(Y)/n
 es <- eigen(S,symmetric=TRUE)

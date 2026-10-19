@@ -18,20 +18,17 @@
     tcrossprod(sweep(e$vectors, 2L, sqrt(e$values), `/`), e$vectors)
 }
 
-# Algorithm 1. The optional N/n factor reproduces the research scripts.
-.adjusted <- function(values, K, N, n, p, adjustment) {
+# Algorithm 1: adjusted estimation of spikes and noise variance.
+.adjusted <- function(values, K, n, p) {
     if (K == 0L) return(list(spikes = numeric(), sigma_sq = mean(values)))
     bulk <- mean(values[seq.int(K + 1L, p)])
     if (bulk <= 0) stop("Residual bulk variance must be positive.", call. = FALSE)
     gamma <- p / n
     invert <- function(sigma_sq, final = FALSE) {
         z <- values[seq_len(K)] / sigma_sq
-        if (adjustment == "legacy") z <- z * N / n
         b <- gamma - 1 - z
         root <- (-b + sqrt(pmax(b^2 - 4 * z, 0))) / 2
-        if (adjustment == "legacy") {
-            root <- pmax(root, 1 + sqrt(gamma) + 1e-4)
-        } else if (final) {
+        if (final) {
             root[z < (1 + sqrt(gamma))^2] <- 1 + sqrt(gamma)
         }
         root * sigma_sq
@@ -44,9 +41,9 @@
     list(spikes = invert(sigma_sq, TRUE), sigma_sq = sigma_sq)
 }
 
-.select_K <- function(values, N, n, p, method, conf_level, delta, K_max, adjustment) {
+.select_K <- function(values, n, p, method, conf_level, delta, K_max) {
     if (K_max == 0L) return(0L)
-    noise <- function(k) .adjusted(values, k, N, n, p, adjustment)$sigma_sq
+    noise <- function(k) .adjusted(values, k, n, p)$sigma_sq
     if (method == "PLY") {
         penalty <- (p / n + 2 * sqrt(p / n)) * (1 + n / p^(1 + delta)) / p
         scores <- vapply(0:K_max, noise, numeric(1)) +
@@ -56,7 +53,7 @@
     if (!requireNamespace("RMTstat", quietly = TRUE))
         stop("Install RMTstat for KN spike selection, or supply K or use PLY.", call. = FALSE)
     s <- RMTstat::qtw(conf_level, beta = 1)
-    # Preserve the research implementation's sequential test, while allowing K=0.
+    # Sequential Tracy-Widom threshold test, allowing K=0.
     for (k in seq_len(K_max)) {
         d <- p - k
         mu <- (sqrt(n - 0.5) + sqrt(d - 0.5))^2 / n
