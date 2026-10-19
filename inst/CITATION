@@ -1,0 +1,8 @@
+bibentry(bibtype = "Article",
+  title = paste("Testing General Linear Hypotheses Under a High-Dimensional",
+                "Multivariate Regression Model with Spiked Noise Covariance"),
+  author = c(person("Haoran", "Li"), person("Alexander", "Aue"),
+             person("Debashis", "Paul"), person("Jie", "Peng")),
+  journal = "Journal of the American Statistical Association",
+  year = "2024", volume = "119", number = "548", pages = "2799--2810",
+  doi = "10.1080/01621459.2023.2278825")

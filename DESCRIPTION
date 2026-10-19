@@ -1,0 +1,20 @@
+Package: spikedGLHT
+Type: Package
+Title: General Linear Hypothesis Tests with Spiked Noise Covariance
+Version: 0.1.0
+Authors@R: c(person("Haoran", "Li", email = "hzl0152@auburn.edu",
+    role = c("aut", "cre")), person("Alexander", "Aue", role = "ctb"),
+    person("Debashis", "Paul", role = "ctb"), person("Jie", "Peng", role = "ctb"))
+Description: Regularized likelihood ratio, Lawley-Hotelling, and
+    Bartlett-Nanda-Pillai tests for general linear hypotheses in
+    high-dimensional multivariate regression with spiked noise covariance.
+    Implements bias-adjusted covariance estimation, minimax regularization,
+    data-driven spike selection, and normal or parametric bootstrap calibration
+    following Li, Aue, Paul, and Peng (2024) <doi:10.1080/01621459.2023.2278825>.
+License: GPL-3
+Encoding: UTF-8
+Depends: R (>= 4.1.0)
+Imports: quadprog, stats
+Suggests: RMTstat
+URL: https://github.com/HaoranLi/spikedGLHT
+BugReports: https://github.com/HaoranLi/spikedGLHT/issues

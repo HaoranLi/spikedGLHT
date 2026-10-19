@@ -1,0 +1,2 @@
+export(spiked_glht)
+S3method(print,spiked_glht)
